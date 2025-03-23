@@ -18,10 +18,14 @@ export class BrokerGateway {
   @WebSocketServer()
   server: Server;
 
+  @SubscribeMessage('topics')
+  topics(@MessageBody() data: string): WsResponse<string> {
+    console.log(data);
+    return { event: 'topics', data: 'some topic motherfucker' };
+  }
+
   @SubscribeMessage('events')
   findAll(): Observable<WsResponse<number>> {
-    console.log('somethin');
-
     return from([1, 2, 3]).pipe(
       map((item) => ({ event: 'events', data: item })),
     );
@@ -29,6 +33,7 @@ export class BrokerGateway {
 
   @SubscribeMessage('identity')
   identity(@MessageBody() data: number): number {
+    console.log(data);
     return data;
   }
 }

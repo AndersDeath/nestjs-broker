@@ -39,6 +39,7 @@ export class MindMapsController {
   ) {}
 
   @Post('generate')
+  @ApiOperation({ deprecated: true })
   @ApiOperation({ summary: 'Upload CSV file for building mindmaps jsons' })
   @ApiResponse({
     status: 200,
@@ -104,6 +105,7 @@ export class MindMapsController {
   }
 
   @Get('mindmaps')
+  @ApiOperation({ deprecated: true })
   @ApiOperation({ summary: 'Get all generated mindmaps' })
   @ApiResponse({
     status: 200,
@@ -115,6 +117,7 @@ export class MindMapsController {
   }
 
   @Get('mindmaps/:uuid')
+  @ApiOperation({ deprecated: true })
   @ApiOperation({ summary: 'Get generated mindmap by uuid' })
   @ApiResponse({
     status: 200,
