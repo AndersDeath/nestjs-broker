@@ -1,12 +1,16 @@
 # Nestjs-Broker
 
-# Nestjs-Broker
+# Table of Contents
 
-- [Nestjs Broker](#nestjs-broker)
-  - [Preface](#preface)
-  - [Installation](#installation)
-  - [Run](#run)
-  - [Setting up pgAdmin and PostgreSQL Server](#setting-up-pgadmin-and-postgresql-server)
+1. [Preface](#preface)
+2. [Installation](#installation)
+3. [Run](#run)
+4. [Setting up pgAdmin and PostgreSQL Server](#setting-up-pgadmin-and-postgresql-server)
+5. [How it works](#how-it-works)
+6. [Example connections](#example-connections)
+   - [From web client](#example-connections-from-web-client)
+   - [From Node.js server (NestJS)](#example-connections-from-nodejs-server-nestjs)
+7. [What should be covered in the future updates](#what-should-be-covered-in-the-future-updates)
 
 ## Preface
 
