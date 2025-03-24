@@ -1,6 +1,5 @@
 import { Controller, Get, Logger } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { template } from './app.view';
 
 @Controller()
 export class AppController {
@@ -16,6 +15,6 @@ export class AppController {
   })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   getIndex() {
-    return template;
+    return 'Nestjs Broker application';
   }
 }

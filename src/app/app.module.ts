@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MindMapsModule } from '../mind-maps/mind-maps.module';
 import { BrokerModule } from '../broker/broker.module';
 import { AppController } from './app.controller';
 
 @Module({
   imports: [
-    MindMapsModule,
     BrokerModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({

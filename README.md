@@ -2,7 +2,7 @@
 
 # Nestjs-Broker
 
-- [AI Generated Mind Maps](#ai-generated-mind-maps)
+- [Nestjs Broker](#nestjs-broker)
   - [Preface](#preface)
   - [Installation](#installation)
   - [Run](#run)
@@ -14,9 +14,6 @@ The application is based on:
 
 1. Nestjs Framework
 2. PostgreSQL
-3. OpenAI Api
-
-The live version of the application is available on: http://51.75.64.52:3000/api
 
 ## Installation
 
@@ -24,13 +21,12 @@ The live version of the application is available on: http://51.75.64.52:3000/api
 2. Run `npm install`
 3. Create a copy of .env.sample as .env
 4. Put your credentials to .env You need.
-   1. OPENAI_API_KEY=your_openai_api_key
-   2. PORT=port_number
-   3. PG_HOST=db
-   4. PG_PORT=5432
-   5. PG_USERNAME=username
-   6. PG_PASSWORD=password
-   7. PG_DATABASE=database
+   1. PORT=port_number
+   2. PG_HOST=db
+   3. PG_PORT=5432
+   4. PG_USERNAME=username
+   5. PG_PASSWORD=password
+   6. PG_DATABASE=database
 
 ## Run
 
@@ -58,3 +54,96 @@ If you use this approach you need to scroll down to pgAdmin setup section and cr
     Username: postgres
     Password: postgres
 ```
+
+# How it works
+
+The api documentations is available in Swagger on http://localhost:3000/api#/ 
+
+The available functionality is limited. For now only exchanging messages via socket connection is available and messages endpoints for getting information via api.
+
+## Example connections from web client:
+
+```html
+<html>
+  <head>
+    <script
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const socket = io('http://localhost:3000');
+      const id = 'theFirstId';
+      socket.on('connect', function () {
+        socket.emit(
+          'broker',
+          {
+            id: id,
+            topic: 'first topic',
+            data: { text: 'some text' },
+          },
+          (response) => console.log('Some response:', response),
+        );
+      });
+
+      socket.on('disconnect', function () {
+        console.log('Disconnected');
+      });
+    </script>
+  </head>
+
+  <body>
+  </body>
+</html>
+```
+
+## Example connections from nodejs server (NestJS):
+
+```typescript
+import { Injectable, Logger } from '@nestjs/common';
+import { io, Socket } from 'socket.io-client';
+
+@Injectable()
+export class AppService {
+  private socket: Socket;
+  private logger: Logger = new Logger(AppService.name);
+  constructor() {}
+  initialize() {
+    this.socket = io('http://localhost:3000');
+    this.socket.on('connect', () => {
+      const id = 'theSecondId';
+
+      this.logger.debug('Connect to something');
+      this.socket.emit(
+        'broker',
+        {
+          id,
+          topic: 'first topic',
+          data: 'some message another another',
+        },
+        (answer) => {
+          console.log('Answer', answer);
+        },
+      );
+
+      this.socket.on('broker', (message) => {
+        console.log(message);
+      });
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from WebSocket server');
+    });
+  }
+}
+```
+
+In these example some functionality like topic support and clientIds are in progress.
+
+
+## What should be covered in the future updates
+
+1. Topics support
+2. ClientIds support for detecting the same services after their possible reload
+3. Authentication and Authorization via optional api token or jwt.
+4. After finalizing the main functionality cover the service by tests.
