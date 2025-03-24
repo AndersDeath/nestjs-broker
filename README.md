@@ -84,7 +84,7 @@ The available functionality is limited. For now only exchanging messages via soc
           {
             id: id,
             topic: 'first topic',
-            data: { text: 'some text' },
+            body: { text: 'some text' },
           },
           (response) => console.log('Some response:', response),
         );
@@ -123,7 +123,7 @@ export class AppService {
         {
           id,
           topic: 'first topic',
-          data: 'some message another another',
+          body: 'some message another another',
         },
         (answer) => {
           console.log('Answer', answer);
