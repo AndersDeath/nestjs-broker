@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { Message } from '../entities/message';
+import { Message } from '../entities/message.entity';
 import { TopicService } from './topic.service';
 
 @Injectable()

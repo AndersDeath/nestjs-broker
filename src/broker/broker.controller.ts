@@ -12,16 +12,11 @@ import { TopicService } from './services/topic.service';
 import { Topic } from './entities/topic.entity';
 import { UUID } from 'crypto';
 import { MessageService } from './services/message.service';
-import { Message } from './entities/message';
-
-export class CreateTopicDto {
-  name: string;
-}
-
-export class CreateMessageDto {
-  body: JSON;
-  topicName: string;
-}
+import { Message } from './entities/message.entity';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { CreateTopicDto } from './dto/create-topic.dto';
+import { BrokerSubscription } from './models/broker-subscription';
+import { BrokerSubscriptionService } from './services/broker-subscription.service';
 
 @ApiTags('Broker')
 @Controller('broker')
@@ -29,6 +24,7 @@ export class BrokerController {
   constructor(
     private topicService: TopicService,
     private messageService: MessageService,
+    private brokerSubscriptionService: BrokerSubscriptionService,
   ) {}
 
   @Get('info')
@@ -115,5 +111,13 @@ export class BrokerController {
     } catch (error: any) {
       throw new BadRequestException(500, new Error(error));
     }
+  }
+
+  @Get('subscriptions')
+  @ApiOperation({ summary: 'Get subscriptions list' })
+  async getSubscriptions(): Promise<BrokerSubscription[] | null> {
+    const subscriptions = await this.brokerSubscriptionService.getList();
+    if (subscriptions.length === 0) throw new NotFoundException('');
+    return subscriptions;
   }
 }
