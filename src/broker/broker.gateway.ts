@@ -1,14 +1,13 @@
 import {
+  ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from '@nestjs/websockets';
-// import { Socket } from 'dgram';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import { MessageService } from './services/message.service';
+import { CreateMessageDto } from './dto/create-message.dto';
 
 @WebSocketGateway({
   cors: {
@@ -16,52 +15,44 @@ import { Server } from 'socket.io';
   },
 })
 export class BrokerGateway {
+  constructor(private messageService: MessageService) {}
   @WebSocketServer()
   server: Server;
 
-  constructor() {
-    // this.server = new Server();
-    // // console.log(this.server);
-    // // this.server.conn
-    // this.server.emit('some', { some: 'new' });
-    // this.server.on('some', (answer) => console.log(answer));
+  private subscriptions: { [key: string]: Set<string> } = {}; // in progress
+
+  private subs = new Map<string, Socket>();
+
+  @SubscribeMessage('broker')
+  async broker(
+    @MessageBody() data: { id: string; body: JSON; topic: string },
+    @ConnectedSocket() client: Socket,
+  ): Promise<void> {
+    await this.messageService.save(new CreateMessageDto(data.body, data.topic));
+    this.subs.set(client.id, client);
+    this.subs.forEach((socket: Socket, key: string) => {
+      if (key !== client.id) {
+        socket.emit('broker', data);
+      }
+    });
   }
 
-  // private eventHandlers = new Map<string, (...args: any[]) => void>();
+  // in progress
+  @SubscribeMessage('subscribe')
+  subscribe(
+    @MessageBody() data: any,
+    // @ConnectedSocket() client: Socket,
+  ): number {
+    data.topics.forEach((topic: string) => {
+      if (!this.subscriptions[topic]) {
+        this.subscriptions[topic] = new Set([data.id as string]);
+      } else {
+        this.subscriptions[topic].add(data.id as string);
+      }
+    });
 
-  // registerDynamicEvent(eventName: string, callback: (...args: any[]) => void) {
-  //   console.log(eventName);
-  //   this.eventHandlers.set(eventName, callback);
-  // }
+    console.log(this.subscriptions);
 
-  // @SubscribeMessage('push')
-  // handleDynamicEvent(
-  //   client: Socket,
-  //   { eventName, data }: { eventName: string; data: any },
-  // ) {
-  //   const handler = this.eventHandlers.get(eventName);
-  //   if (handler) {
-  //     handler(data);
-  //   }
-  // }
-
-  @SubscribeMessage('push')
-  topics(@MessageBody() data: string): WsResponse<string> {
-    console.log(data);
-    return { event: 'topics', data: 'some topic motherfucker' };
-  }
-
-  @SubscribeMessage('pull')
-  findAll(): Observable<WsResponse<number>> {
-    console.log('sss');
-    return from([1, 2, 3]).pipe(
-      map((item) => ({ event: 'events', data: item })),
-    );
-  }
-
-  @SubscribeMessage('identity')
-  identity(@MessageBody() data: number): number {
-    console.log(data);
-    return data;
+    return 404;
   }
 }
