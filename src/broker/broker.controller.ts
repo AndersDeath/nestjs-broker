@@ -53,33 +53,9 @@ export class BrokerController {
   async getTopic(
     @Query() query: GetTopicQueryDto): Promise<Topic | null> {
     if (query.uuid) {
-      try {
-        const response = await this.topicService.findOne(query.uuid);
-        if (response === null) {
-          throw new NotFoundException();
-        }
-        return response;
-      } catch (error: any) {
-        if (error.status === 404) {
-          throw new NotFoundException(getExceptionText["GET_TOPIC_NOT_FOUND"]('uuid'));
-        } else {
-          throw new BadRequestException(getExceptionText["GET_TOPIC_BAD_REQUEST"]('uuid'));
-        }
-      }
+      return this.topicService.findByUUID(query.uuid);
     } else if (query.name) {
-      try {
-        const response = await this.topicService.findOneByName(query.name);;
-        if (response === null) {
-          throw new NotFoundException();
-        }
-        return response;
-      } catch (error: any) {
-        if (error.status === 404) {
-          throw new NotFoundException(getExceptionText["GET_TOPIC_NOT_FOUND"]('name'));
-        } else {
-          throw new BadRequestException(getExceptionText["GET_TOPIC_BAD_REQUEST"]('name'));
-        }
-      }
+      return this.topicService.findByName(query.name);
     } else {
       throw new NotFoundException(getExceptionText["GET_TOPIC_NOT_FOUND"]);
     }
