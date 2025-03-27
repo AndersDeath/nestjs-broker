@@ -8,7 +8,7 @@ import { BrokerSubscription } from '../models/broker-subscription';
 import { BrokerSubscriptionService } from '../services/broker-subscription.service';
 
 @ApiTags('Broker')
-@Controller('broker')
+@Controller('v1/broker')
 export class SubscriptionController {
     constructor(
         private brokerSubscriptionService: BrokerSubscriptionService,

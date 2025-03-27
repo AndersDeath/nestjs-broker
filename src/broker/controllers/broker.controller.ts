@@ -5,7 +5,7 @@ import {
 import { ApiTags, ApiOperation, } from '@nestjs/swagger';
 
 @ApiTags('Broker')
-@Controller('broker')
+@Controller('v1/broker')
 export class BrokerController {
 
   @Get('info')

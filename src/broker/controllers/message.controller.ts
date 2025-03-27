@@ -14,7 +14,7 @@ import { Message } from '../entities/message.entity';
 import { CreateMessageDto } from '../dto/create-message.dto';
 
 @ApiTags('Broker')
-@Controller('broker')
+@Controller('v1/broker')
 export class MessageController {
     constructor(
         private messageService: MessageService,

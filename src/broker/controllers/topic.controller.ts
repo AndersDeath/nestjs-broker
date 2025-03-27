@@ -16,7 +16,7 @@ import { TopicService } from '../services/topic.service';
 import { TopicSwagger } from 'src/common/topic.swagger';
 
 @ApiTags('Broker')
-@Controller('broker')
+@Controller('v1/broker')
 export class TopicController {
     constructor(
         private topicService: TopicService
