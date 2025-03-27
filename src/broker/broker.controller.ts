@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   NotFoundException,
   Post,
   Query,
@@ -17,6 +18,8 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { BrokerSubscription } from './models/broker-subscription';
 import { BrokerSubscriptionService } from './services/broker-subscription.service';
+import { getExceptionText } from 'src/common/error.dict';
+import { GetTopicQueryDto } from './dto/get-topic-query.dto';
 
 @ApiTags('Broker')
 @Controller('broker')
@@ -25,7 +28,9 @@ export class BrokerController {
     private topicService: TopicService,
     private messageService: MessageService,
     private brokerSubscriptionService: BrokerSubscriptionService,
-  ) {}
+  ) { }
+
+  private readonly logger = new Logger(BrokerController.name);
 
   @Get('info')
   @ApiOperation({ summary: 'Get Broker connection details' })
@@ -39,29 +44,32 @@ export class BrokerController {
     try {
       return await this.topicService.save([createTopicDto]);
     } catch (error: any) {
-      throw new BadRequestException(500, new Error(error));
+      throw new BadRequestException(getExceptionText["CRATE_TOPIC_BAD_REQUEST"]);
     }
   }
 
   @Get('topic')
   @ApiOperation({ summary: 'Get topic' })
-  @ApiQuery({ name: 'uuid', required: false })
-  @ApiQuery({ name: 'name', required: false })
   async getTopic(
-    @Query('uuid') uuid?: UUID,
-    @Query('name') name?: string,
-  ): Promise<Topic | null> {
-    if (uuid) {
+    @Query() query: GetTopicQueryDto): Promise<Topic | null> {
+    if (query.uuid) {
       try {
-        return this.topicService.findOne(uuid);
+        const response = await this.topicService.findOne(query.uuid);
+        console.log(response);
+        return response;
       } catch (error: any) {
-        throw new BadRequestException(500, new Error(error));
+        throw new BadRequestException(getExceptionText["GET_TOPIC_BAD_REQUEST"]('uuid'));
       }
-    } else if (name) {
+    } else if (query.name) {
       try {
-        return this.topicService.findOneByName(name);
+        const response = await this.topicService.findOneByName(query.name);
+        if(!response) {
+          throw new NotFoundException(getExceptionText["GET_TOPIC_NOT_FOUND"]('name'));
+        }
+        console.log(response);
+        return response;
       } catch (error: any) {
-        throw new BadRequestException(500, new Error(error));
+        throw new BadRequestException(getExceptionText["GET_TOPIC_BAD_REQUEST"]('name'));
       }
     } else {
       throw new NotFoundException('');
@@ -115,9 +123,9 @@ export class BrokerController {
 
   @Get('subscriptions')
   @ApiOperation({ summary: 'Get subscriptions list' })
-  async getSubscriptions(): Promise<BrokerSubscription[] | null> {
+   async getSubscriptions(): Promise<BrokerSubscription[] | null> {
     const subscriptions = await this.brokerSubscriptionService.getList();
-    if (subscriptions.length === 0) throw new NotFoundException('');
+   if (subscriptions.length === 0) throw new NotFoundException('');
     return subscriptions;
   }
 }

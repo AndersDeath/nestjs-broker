@@ -8,7 +8,6 @@ export class AppController {
   constructor() {}
 
   @Get('/')
-  @ApiOperation({ summary: 'The main static page' })
   @ApiResponse({
     status: 200,
     description: 'Main static page returned successfully',
