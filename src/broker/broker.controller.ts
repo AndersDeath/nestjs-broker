@@ -9,7 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { TopicService } from './services/topic.service';
 import { Topic } from './entities/topic.entity';
 import { UUID } from 'crypto';
 import { MessageService } from './services/message.service';
@@ -20,6 +19,7 @@ import { BrokerSubscription } from './models/broker-subscription';
 import { BrokerSubscriptionService } from './services/broker-subscription.service';
 import { getExceptionText } from 'src/common/error.dict';
 import { GetTopicQueryDto } from './dto/get-topic-query.dto';
+import { TopicService } from './services/topic.service';
 
 @ApiTags('Broker')
 @Controller('broker')
@@ -55,24 +55,33 @@ export class BrokerController {
     if (query.uuid) {
       try {
         const response = await this.topicService.findOne(query.uuid);
-        console.log(response);
+        if (response === null) {
+          throw new NotFoundException();
+        }
         return response;
       } catch (error: any) {
-        throw new BadRequestException(getExceptionText["GET_TOPIC_BAD_REQUEST"]('uuid'));
+        if (error.status === 404) {
+          throw new NotFoundException(getExceptionText["GET_TOPIC_NOT_FOUND"]('uuid'));
+        } else {
+          throw new BadRequestException(getExceptionText["GET_TOPIC_BAD_REQUEST"]('uuid'));
+        }
       }
     } else if (query.name) {
       try {
-        const response = await this.topicService.findOneByName(query.name);
-        if(!response) {
-          throw new NotFoundException(getExceptionText["GET_TOPIC_NOT_FOUND"]('name'));
+        const response = await this.topicService.findOneByName(query.name);;
+        if (response === null) {
+          throw new NotFoundException();
         }
-        console.log(response);
         return response;
       } catch (error: any) {
-        throw new BadRequestException(getExceptionText["GET_TOPIC_BAD_REQUEST"]('name'));
+        if (error.status === 404) {
+          throw new NotFoundException(getExceptionText["GET_TOPIC_NOT_FOUND"]('name'));
+        } else {
+          throw new BadRequestException(getExceptionText["GET_TOPIC_BAD_REQUEST"]('name'));
+        }
       }
     } else {
-      throw new NotFoundException('');
+      throw new NotFoundException(getExceptionText["GET_TOPIC_NOT_FOUND"]);
     }
   }
 
@@ -123,9 +132,9 @@ export class BrokerController {
 
   @Get('subscriptions')
   @ApiOperation({ summary: 'Get subscriptions list' })
-   async getSubscriptions(): Promise<BrokerSubscription[] | null> {
+  async getSubscriptions(): Promise<BrokerSubscription[] | null> {
     const subscriptions = await this.brokerSubscriptionService.getList();
-   if (subscriptions.length === 0) throw new NotFoundException('');
+    if (subscriptions.length === 0) throw new NotFoundException('');
     return subscriptions;
   }
 }

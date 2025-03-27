@@ -4,10 +4,9 @@ import { BrokerController } from './broker.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Topic } from './entities/topic.entity';
 import { Message } from './entities/message.entity';
-import { TopicService } from './services/topic.service';
 import { MessageService } from './services/message.service';
 import { BrokerSubscriptionService } from './services/broker-subscription.service';
-
+import { TopicService } from './services/topic.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Topic, Message])],
   providers: [
@@ -18,4 +17,4 @@ import { BrokerSubscriptionService } from './services/broker-subscription.servic
   ],
   controllers: [BrokerController],
 })
-export class BrokerModule {}
+export class BrokerModule { }

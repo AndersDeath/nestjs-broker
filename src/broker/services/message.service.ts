@@ -11,7 +11,7 @@ export class MessageService {
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
     private readonly topicService: TopicService,
-  ) {}
+  ) { }
 
   async save(messages: Omit<Message, 'uuid' | 'dateCreate'>): Promise<Message> {
     if (await this.topicService.isExist(messages.topicName)) {

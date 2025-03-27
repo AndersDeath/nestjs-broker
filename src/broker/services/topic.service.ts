@@ -1,4 +1,4 @@
-import { Topic } from './../entities/topic.entity';
+import { Topic } from '../entities/topic.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
@@ -9,7 +9,7 @@ export class TopicService {
   constructor(
     @InjectRepository(Topic)
     private readonly topicRepository: Repository<Topic>,
-  ) {}
+  ) { }
 
   save(topics: Partial<Topic>[]): Promise<Topic[]> {
     return this.topicRepository.save(topics);
@@ -23,7 +23,7 @@ export class TopicService {
     return this.topicRepository.findOneBy({ uuid });
   }
 
-  findOneByName(name: string): Promise<Topic | null> {
+  findOneByName(name: any): Promise<Topic | null> {
     return this.topicRepository.findOneBy({ name });
   }
 
