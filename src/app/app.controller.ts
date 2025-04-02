@@ -1,11 +1,9 @@
-import { Controller, Get, Logger } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get } from '@nestjs/common';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  private readonly logger = new Logger(AppController.name);
-
-  constructor() {}
+  constructor() { }
 
   @Get('/')
   @ApiResponse({
