@@ -3,9 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BrokerModule } from '../broker/broker.module';
 import { AppController } from './app.controller';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
+    UserModule,
     BrokerModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({

@@ -11,7 +11,7 @@ import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { UUID } from 'crypto';
 import { MessageService } from '../services/message.service';
 import { Message } from '../entities/message.entity';
-import { CreateMessageDto } from '../dto/create-message.dto';
+import { CreateMessageDto } from '../dtos/create-message.dto';
 
 @ApiTags('Broker')
 @Controller('v1/broker')

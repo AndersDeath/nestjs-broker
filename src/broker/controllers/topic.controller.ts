@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Topic } from '../entities/topic.entity';
-import { CreateTopicDto } from '../dto/create-topic.dto';
+import { CreateTopicDto } from '../dtos/create-topic.dto';
 import { getExceptionText } from 'src/common/error.dict';
-import { GetTopicQueryDto } from '../dto/get-topic-query.dto';
+import { GetTopicQueryDto } from '../dtos/get-topic-query.dto';
 import { TopicService } from '../services/topic.service';
 import { TopicSwagger } from 'src/common/topic.swagger';
 
