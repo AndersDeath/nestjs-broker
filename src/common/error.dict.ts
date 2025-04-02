@@ -1,5 +1,6 @@
 export const getExceptionText = {
     CREATE_TOPIC_BAD_REQUEST: "Create Topic BadRequest",
+    GET_ALL_TOPICS_BAD_REQUEST: "Get all Topics BadRequest",
     GET_TOPIC_BAD_REQUEST: (query = '') => {
         if (query) {
             return `Get Topic by ${query} BadRequest`
@@ -7,7 +8,7 @@ export const getExceptionText = {
         return `Get Topic BadRequest`;
     },
     GET_TOPIC_NOT_FOUND: (query = '') => {
-        if(query) {
+        if (query) {
             return `Topic by ${query} is not found`;
         }
         return `Topic is not found`;
